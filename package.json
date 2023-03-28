@@ -1,0 +1,25 @@
+{
+  "name": "online-consultant-server",
+  "version": "1.0.0",
+  "description": "server",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "pid": "netstat -nlp | grep :4000",
+    "dep": "git add . &&  git commit -m 'fix' && git push",
+    "dow": "git add . &&  git commit -m 'old fix' && git pull"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "nanoid": "^4.0.1",
+    "node-telegram-bot-api": "^0.61.0",
+    "nodemon": "^2.0.20",
+    "socket.io": "^4.5.4",
+    "sqlite3": "^5.1.4"
+  }
+}
