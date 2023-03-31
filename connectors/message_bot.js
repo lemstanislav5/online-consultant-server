@@ -3,7 +3,7 @@ module.exports = async message => {
   const {chat, text, photo, document, video, audio, voice} = message;
   let type = false, dir  = false, data = false;
   const { id }  = chat;
-  if (text === PASSWORD) {
+  if (text === process.env.PASSWORD) {
     ManagerController.accest(id);
     return MessegesController.sendBotNotification(bot, id, 'Доступ получен!');
   }

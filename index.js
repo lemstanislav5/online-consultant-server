@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const process = require('process');
 const fs = require("fs");
 const { createWriteStream } = require('fs');
@@ -6,7 +8,6 @@ const path = require('path');
 const connection = require('./connectors/connection');
 const message_bot  = require('./connectors/message_bot');
 const callback_query_bot  = require('./connectors/callback_query_bot');
-const {URL, PASSWORD, PORT} = require('../config.js');
 const bot = require('./services/telegramBot');
 bot.setMyCommands([ { command: '/start', description: 'Старт(меню)' }]);
 
@@ -23,7 +24,7 @@ const express = require('express'),
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
   next();
@@ -48,7 +49,7 @@ app.post("/login", (req, res) => {
 // our login logic goes here
 });
 
-http.listen(PORT, () => console.log('listening on *:' + PORT));
+http.listen(process.env.PORT, () => console.log('listening on *:' + process.env.PORT));
 InitializationController.initialization();
 
 io.on('connection', connection)
