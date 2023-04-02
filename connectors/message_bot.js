@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { createWriteStream } = require('fs');
 const util = require('../utilities/utilities');
+const bot = require('./services/telegramBot');
 
 const UsersController = require('../controllers/UserController');
 const MessegesController = require('../controllers/MessegesController');

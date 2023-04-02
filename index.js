@@ -1,8 +1,6 @@
 require('dotenv').config()
 
 const process = require('process');
-const fs = require("fs");
-const path = require('path');
 const connection = require('./connectors/connection');
 const message_bot  = require('./connectors/message_bot');
 const callback_query_bot  = require('./connectors/callback_query_bot');
