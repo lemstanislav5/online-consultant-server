@@ -80,7 +80,7 @@ module.exports = socket => {
     let dir = __dirname + '/media/' + section;
     await util.checkDirectory(dir, fs); //await
     const fileName = new Date().getTime();
-    const pathFile = 'http://' + URL + '/media/' + section + '/' + fileName + '.' + type;
+    const pathFile = 'http://' + URL + '/api/media/' + section + '/' + fileName + '.' + type;
     console.log(pathFile);
     fs.writeFile(dir + '/' + fileName + '.' + type, file, (err) => {
       if (err) {
