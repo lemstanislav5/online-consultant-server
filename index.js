@@ -2,8 +2,6 @@ require('dotenv').config()
 
 const process = require('process');
 const fs = require("fs");
-const { createWriteStream } = require('fs');
-const util = require('./utilities/utilities');
 const path = require('path');
 const connection = require('./connectors/connection');
 const message_bot  = require('./connectors/message_bot');
@@ -11,24 +9,16 @@ const callback_query_bot  = require('./connectors/callback_query_bot');
 const bot = require('./services/telegramBot');
 bot.setMyCommands([ { command: '/start', description: 'Старт(меню)' }]);
 
-const UsersController = require('./controllers/UserController');
-const MessegesController = require('./controllers/MessegesController');
-const InitializationController = require('./controllers/InitializationController');
-const ManagerController = require('./controllers/ManagerController');
+const header = require('./middleware/header');
 
+const InitializationController = require('./controllers/InitializationController');
 
 const express = require('express'),
       app = express(),
       http = require('http').Server(app),
       io = require('socket.io')(http, { maxHttpBufferSize: 1e8, pingTimeout: 60000 });
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
+app.use(header);
 
 app.get('/media*', (req, res) => {
   try {

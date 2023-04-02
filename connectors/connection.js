@@ -1,3 +1,10 @@
+const fs = require("fs");
+const util = require('../utilities/utilities');
+
+const UsersController = require('../controllers/UserController');
+const MessegesController = require('../controllers/MessegesController');
+const ManagerController = require('../controllers/ManagerController');
+
 module.exports = socket => {
   console.log('Пользователь подключился!');
 
