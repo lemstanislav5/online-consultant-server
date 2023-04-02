@@ -1,7 +1,7 @@
-const express = require('express')
+let express = require('express')
   router = express.Router(),
-  mediaRoutes = require('mediaRoutes');
+  mediaRoutes = require('./mediaRoutes');
 
-  router.use('/media*')
+  router.use('/media*', mediaRoutes)
 
   module.exports = router;
