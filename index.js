@@ -1,9 +1,7 @@
 require('dotenv').config()
 
 const process = require('process');
-const connection = require('./connectors/connection');
-const message_bot  = require('./connectors/message_bot');
-const callback_query_bot  = require('./connectors/callback_query_bot');
+const handlers = require('./handlers/handlers');
 const bot = require('./services/telegramBot');
 bot.setMyCommands([ { command: '/start', description: 'Старт(меню)' }]);
 
@@ -32,8 +30,8 @@ app.get('/api', routes);
 http.listen(process.env.PORT, () => console.log('listening on *:' + process.env.PORT));
 InitializationController.initialization();
 
-io.on('connection', connection)
+io.on('connection', handlers.connection)
 
-bot.on('message', message_bot);
+bot.on('message', handlers.message_bot);
 
-bot.on('callback_query', callback_query_bot);
+bot.on('callback_query', handlers.callback_query_bot);
