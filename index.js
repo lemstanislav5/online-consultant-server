@@ -30,8 +30,8 @@ app.get('/api', routes);
 http.listen(process.env.PORT, () => console.log('listening on *:' + process.env.PORT));
 InitializationController.initialization();
 
-io.on('connection', handlers.connection)
+io.on('connection', socket => handlers.connection(socket, io, bot))
 
-bot.on('message', handlers.message_bot);
+bot.on('message', message => handlers.message_bot(message, io, bot));
 
-bot.on('callback_query', handlers.callback_query_bot);
+bot.on('callback_query', msg => handlers.callback_query_bot(msg));

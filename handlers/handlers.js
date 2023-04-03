@@ -5,7 +5,7 @@ const util = require('../utilities/utilities');
 const UsersController = require('../controllers/UserController');
 const MessegesController = require('../controllers/MessegesController');
 const ManagerController = require('../controllers/ManagerController');
-const bot = require('../services/telegramBot');
+
 
 module.exports = {
   callback_query_bot: async msg => {
@@ -14,7 +14,7 @@ module.exports = {
     //! MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', delivered = 1, read = 0);
     UsersController.setCurrent(chatId, 1);
   },
-  connection: socket => {
+  connection: (socket, io, bot) => {
     console.log('Пользователь подключился!');
   
     socket.on('newMessage', async (message, callback) => {
@@ -105,7 +105,7 @@ module.exports = {
       console.log('Пользователь отсоединился!')
     });
   },
-  message_bot: async message => {
+  message_bot: async (message, io, bot) => {
     let messageId = 'server_' + new Date().getTime();
     const {chat, text, photo, document, video, audio, voice} = message;
     let type = false, dir  = false, data = false;
