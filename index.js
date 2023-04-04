@@ -6,7 +6,7 @@ const bot = require('./services/telegramBot');
 bot.setMyCommands([ { command: '/start', description: 'Старт(меню)' }]);
 
 const routes = require('./routes/index');
-const header = require('./middleware/header');
+const headerAccessControl = require('./middleware/headerAccessControl');
 
 const InitializationController = require('./controllers/InitializationController');
 
@@ -15,7 +15,7 @@ const express = require('express'),
       http = require('http').Server(app),
       io = require('socket.io')(http, { maxHttpBufferSize: 1e8, pingTimeout: 60000 });
 
-app.use(header);
+app.use(headerAccessControl);
 
 app.get('/api', routes);
 // app.post("/register", (req, res) => {
