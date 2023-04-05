@@ -7,29 +7,21 @@ bot.setMyCommands([ { command: '/start', description: 'Старт(меню)' }])
 
 const routes = require('./routes/index');
 const headerAccessControl = require('./middleware/headerAccessControl');
-
 const InitializationController = require('./controllers/InitializationController');
 
 const express = require('express'),
       app = express(),
       http = require('http').Server(app),
       io = require('socket.io')(http, { maxHttpBufferSize: 1e8, pingTimeout: 60000 });
-
+/* задает разрешение на получение статических данных (изображений, аудио, видео не) 
+   без привязки к url сайта с которого пошел запрос 
+*/
 app.use(headerAccessControl);
-
 app.get('/api', routes);
-// app.post("/register", (req, res) => {
-// // our register logic goes here...
-// });
-
-// // Login
-// app.post("/login", (req, res) => {
-// // our login logic goes here
-// });
 
 http.listen(process.env.PORT, () => console.log('listening on *:' + process.env.PORT));
 InitializationController.initialization();
-
+// группа связи телеграмм и сокета, я их называю "коннекторы"
 io.on('connection', socket => handlers.connection(socket, io, bot))
 
 bot.on('message', message => handlers.message_bot(message, io, bot));
