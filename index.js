@@ -17,7 +17,17 @@ const express = require('express'),
    без привязки к url сайта с которого пошел запрос 
 */
 app.use(headerAccessControl);
-app.get('/api', routes);
+app.get('/api/media*', (req, res) => {
+   console.log(__dirname, req.originalUrl, process.cwd());
+   try {
+     if (fs.existsSync(path.join(process.cwd(), req.originalUrl))) {
+       return res.status(200).sendFile(path.join(process.cwd(), req.originalUrl));
+     }
+     return res.status(202).send();
+   } catch(err) {
+     console.error(err);
+   }
+ })
 
 http.listen(process.env.PORT, () => console.log('listening on *:' + process.env.PORT));
 InitializationController.initialization();
