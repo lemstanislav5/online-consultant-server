@@ -16,13 +16,6 @@ module.exports = {
   },
   connection: async (socket, io, bot) => {
     console.log('Пользователь подключился!');
-    /* 
-      Следует отпметить, что по логике отчета об отправленных сообщениях, пользователь 
-      получает уведомления об: 
-        - (не)успешной доставке на сервер;
-        - (не)успешной отправке сообщения в бот.
-      При этом пользователь не получит уведомление о прочтении сообщения. 
-    */
     socket.on('newMessage', async (message, callback) => {
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
@@ -49,17 +42,16 @@ module.exports = {
        * если произошла ошибка отправляем уведомление { add: true, send: false}, 
        * и сообщаем об ошибке
       */
-      try {
-        const sendStatus = await MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId);
-        if (!sendStatus) return callback(true, notification);
-        notification = {...notification, send: true};
-        return callback(false, notification);
-      } catch (err) {;
-        console.error(err);
-        return callback(true, notification);
-      }
+      MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId)
+        .then(res => {
+          if (res.message_id !== undefined) notification = {...notification, send: true};
+          return callback(true, notification);
+        })
+        .catch((err) => {
+          console.error(err);
+          return callback(true, notification);
+        });
     });
-  
     socket.on('setNewSocket', (data) => {
       const { chatId } = data;
       console.log('setNewSocket', chatId)
@@ -68,10 +60,9 @@ module.exports = {
       // В зависимости от результата поиска добовляем или обновляем socketId
       UsersController.addOrUpdateUser(socket, chatId);
     });
-  
     socket.on('introduce', async (message, callback) => {
-      // Разбираем сообщение
       const { name, email, chatId } = message;
+      const text = `Пользователь представился как: ${name} ${email}`;
       // Опеределяем дефолтные настроки обратного уведомления для callback
       let notification = {add: false, send: false}
       /**  
@@ -92,17 +83,16 @@ module.exports = {
        * если произошла ошибка отправляем уведомление { add: true, send: false}, 
        * и сообщаем об ошибке
       */
-     //! Уйти от трай кетч передав колбэк далешь?
-      try {
-        MessegesController.sendMessegesToBot(bot, `Пользователь представился как: ${name} ${email}`, chatId, socket.managerId);
-        notification = {...notification, send: true};
-        return callback(false, notification);
-      } catch (err) {
-        console.error(err);
-        return callback(true, notification);
-      }
+      MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId)
+        .then(res => {
+          if (res.message_id !== undefined) notification = {...notification, send: true};
+          return callback(false, notification);
+        })
+        .catch((err) => {
+          console.error(err);
+          return callback(true, notification);
+        });
     });
-  
     socket.on("upload", async (file, type, callback) => {
       let section;
       if (type === 'jpeg' || type === 'jpg' || type === 'png') {
@@ -118,16 +108,22 @@ module.exports = {
       await util.checkDirectory(dir, fs); 
       const fileName = new Date().getTime();
       const pathFile = 'http://' + URL + '/api/media/' + section + '/' + fileName + '.' + type;
-      console.log(pathFile);
       fs.writeFile(dir + '/' + fileName + '.' + type, file, (err) => {
         if (err) {
           callback({url: false});
           console.log(err);
         }
-        MessegesController.sendFile(bot, pathFile, section, callback, socket.managerId);
+        MessegesController.sendFile(bot, pathFile, section, socket.managerId)
+          .then(data => {
+            if(!data.from.is_bot) throw new Error('Ошибка отправки файла!');
+            callback({ url: pathFile });
+          })
+          .catch(err => {
+            console.log(err);
+            callback({ url: false });
+          });
       });
     });
-  
     socket.on('disconnect', () => {
       UsersController.delCurrent();
       console.log('Пользователь отсоединился!')
@@ -149,7 +145,7 @@ module.exports = {
     };
   
     if (photo !== undefined) {
-      // В массиве "photo" содержатся ссылки на изображения различного размера 
+      // В массиве "photo" содержатся ссылки на изображения различного размера выбераем средний размер [3]
       data = await bot.getFile(photo[3].file_id); 
       type = util.ext(data.file_path);
       dir  = ('jpeg' || type === 'jpg' || type === 'png') ? '/media/images/' : false;
@@ -219,7 +215,6 @@ module.exports = {
   },
   getManagerId: async (socket, next) => {
     try {
-      // Получаем managerId 
       const manager = await ManagerController.get();
       // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
       if (manager.length === 0 || manager[0].accest === 0) {

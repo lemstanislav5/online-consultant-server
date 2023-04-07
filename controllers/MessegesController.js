@@ -7,34 +7,22 @@ class MessegesController {
   }
   async sendMessegesToBot(bot, text, chatId, managerId) {
     const userData = await findUser(chatId);
-    console.log('userData', userData);
     const userName = (userData[0].name === null)? 'user['+userData[0].id+']' : userData[0].name + '['+userData[0].id+']';
-    bot.sendMessage(managerId, userName + '\n' + text)
-      .then(res => {
-        if (res.message_id !== undefined) return true;
-        return false;
-      });
+    return bot.sendMessage(managerId, userName + '\n' + text);
   }
 
-  async sendFile(bot, pathFile, section, callback, managerId) {
-    let send;
+  async sendFile(bot, pathFile, section, managerId) {
     if (section === 'images') {
-       send = bot.sendPhoto(managerId, pathFile)
+      return bot.sendPhoto(managerId, pathFile)
     } else if (section === 'documents') {
-      send = bot.sendDocument(managerId, pathFile);
+      return bot.sendDocument(managerId, pathFile);
     } else if (section === 'audio') {
-      send = bot.sendAudio(managerId, pathFile);
+      return bot.sendAudio(managerId, pathFile);
     } else if (section === 'video') {
-      send = bot.sendVideo(managerId, pathFile);
+      return bot.sendVideo(managerId, pathFile);
+    } else {
+      throw new Error('Неизвестный формат файла!');
     }
-    send
-      .then((data) => {
-        if(data.from.is_bot) callback({ url: pathFile });
-      })
-      .catch((err) => {
-        console.log(err);
-        callback({ url: false });
-      });
   }
 
   sendBotNotification(bot, managerId, text){
