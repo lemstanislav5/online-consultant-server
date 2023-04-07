@@ -16,12 +16,6 @@ module.exports = {
   },
   connection: async (socket, io, bot) => {
     console.log('Пользователь подключился!');
-    // Получаем managerId 
-    const manager = await ManagerController.get();
-    // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
-    if (manager.length === 0 || manager[0].accest === 0) {
-      return io.to(socket.id).emit('notification', 'Менеджер offline!');
-    }
     /* 
       Следует отпметить, что по логике отчета об отправленных сообщениях, пользователь 
       получает уведомления об: 
@@ -30,6 +24,8 @@ module.exports = {
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
     socket.on('newMessage', (message, callback) => {
+      const { managerId } = socket;
+      console.log(managerId);
       // Разбераем сообщение
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
