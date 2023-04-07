@@ -2,7 +2,7 @@ let express = require('express')
   router = express.Router(),
   // mediaRoutes = require('./mediaRoutes');
 
-  router.use('/media*', (req, res) => {
+  router.get('/media*', (req, res) => {
     console.log(__dirname, req.originalUrl, process.cwd());
     try {
       if (fs.existsSync(path.join(process.cwd(), req.originalUrl))) {
