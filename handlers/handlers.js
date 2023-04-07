@@ -14,7 +14,7 @@ module.exports = {
     //! MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', delivered = 1, read = 0);
     UsersController.setCurrent(chatId, 1);
   },
-  connection: async (socket, io, bot) => {
+  connection: async (socket, bot, process) => {
     console.log('Пользователь подключился!');
     socket.on('newMessage', async (message, callback) => {
       const { id, text, chatId } = message;
@@ -104,7 +104,7 @@ module.exports = {
       } else if (type === 'mp4') {
         section = 'video';
       }
-      let dir = __dirname + '/media/' + section;
+      let dir = process.cwd() + '/media/' + section;
       await util.checkDirectory(dir, fs); 
       const fileName = new Date().getTime();
       const pathFile = 'http://' + URL + '/api/media/' + section + '/' + fileName + '.' + type;
