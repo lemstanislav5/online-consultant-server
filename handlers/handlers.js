@@ -190,8 +190,8 @@ module.exports = {
           } else {
             const socketId = await UsersController.getSocketCurrentUser(currentUser[0].chatId);
             if (!socketId) return MessegesController.sendBotNotification(bot, id, 'Адресат не найден в базе!');
-            io.to(socketId).emit('newMessage', 'http://' + URL + '/api' + dir + fileName, type);
-            MessegesController.add(id, socketId, messageId, 'http://' + URL + '/api' + dir + fileName, new Date().getTime(), 'to', read = 0);
+            io.to(socketId).emit('newMessage', 'http://' + process.env.URL + '/api' + dir + fileName, type);
+            MessegesController.add(id, socketId, messageId, 'http://' + process.env.URL + '/api' + dir + fileName, new Date().getTime(), 'to', read = 0);
           }
         });
       } else {
