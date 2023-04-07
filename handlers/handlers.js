@@ -24,9 +24,6 @@ module.exports = {
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
     socket.on('newMessage', (message, callback) => {
-      const { managerId } = socket;
-      console.log(managerId);
-      // Разбераем сообщение
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
       let notification = {add: false, send: false};
@@ -53,7 +50,7 @@ module.exports = {
        * и сообщаем об ошибке
       */
       try {
-        MessegesController.sendMessegesToBot(bot, io, text, chatId, socket);
+        MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId);
         notification = {...notification, send: true};
         return callback(false, notification);
       } catch (err) {;
