@@ -1,4 +1,4 @@
-const { addMessage, getIdManager, findUser, getAllUsers, getMesseges } = require('../services/dataBaseSqlite3');
+const { addMessage, findUser, getAllUsers, getMesseges } = require('../services/dataBaseSqlite3');
 
 class MessegesController {
   async add(chatId, socketId, messageId, text, time, type, read) {
