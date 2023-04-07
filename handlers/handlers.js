@@ -23,7 +23,7 @@ module.exports = {
         - (не)успешной отправке сообщения в бот.
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
-    socket.on('newMessage', (message, callback) => {
+    socket.on('newMessage', async (message, callback) => {
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
       let notification = {add: false, send: false};
@@ -40,7 +40,7 @@ module.exports = {
         MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', read = 0);
         notification = {...notification, add: true};
       } catch (err) {
-        console.error('MessegesController.add: ', err);
+        console.error(err);
         return callback(true, notification);
       }
       /** 
@@ -50,11 +50,12 @@ module.exports = {
        * и сообщаем об ошибке
       */
       try {
-        MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId);
+        const sendStatus = await MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId);
+        if (!sendStatus) return callback(true, notification);
         notification = {...notification, send: true};
         return callback(false, notification);
       } catch (err) {;
-        console.error('newMessage -> MessegesController.sendMessegesToBot: ', err);
+        console.error(err);
         return callback(true, notification);
       }
     });
@@ -82,7 +83,7 @@ module.exports = {
         UsersController.setNameAndEmail(name, email, chatId);
         notification = {...notification, add: true};
       } catch (err) {
-        console.error('UsersController.setUserNameAndEmail: ', err);
+        console.error(err);
         return callback(true, notification);
       }
       /** 
@@ -91,12 +92,13 @@ module.exports = {
        * если произошла ошибка отправляем уведомление { add: true, send: false}, 
        * и сообщаем об ошибке
       */
+     //! Уйти от трай кетч передав колбэк далешь?
       try {
-        MessegesController.sendMessegesToBot(bot, io, `Пользователь представился как: ${name} ${email}`, chatId, socket);
+        MessegesController.sendMessegesToBot(bot, `Пользователь представился как: ${name} ${email}`, chatId, socket.managerId);
         notification = {...notification, send: true};
         return callback(false, notification);
       } catch (err) {
-        console.error('introduce -> MessegesController.sendMessegesToBot: ', err);
+        console.error(err);
         return callback(true, notification);
       }
     });
@@ -122,7 +124,7 @@ module.exports = {
           callback({url: false});
           console.log(err);
         }
-        MessegesController.sendFile(bot, io, pathFile, section, callback, socket);
+        MessegesController.sendFile(bot, pathFile, section, callback, socket.managerId);
       });
     });
   
