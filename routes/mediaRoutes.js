@@ -1,5 +1,6 @@
 const process = require('process');
 const fs = require("fs");
+const path = require('path');
 
 module.exports = (req, res) => {
   console.log(__dirname, req.originalUrl, process.cwd());
