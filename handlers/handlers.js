@@ -47,7 +47,7 @@ module.exports = {
       MessegesController.sendMessegesToBot(bot, text, chatId, socket.managerId)
         .then(res => {
           if (res.message_id !== undefined) notification = {...notification, send: true};
-          return callback(true, notification);
+          return callback(false, notification);
         })
         .catch((err) => {
           console.error(err);
