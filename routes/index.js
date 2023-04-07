@@ -1,6 +1,6 @@
 let express = require('express')
   router = express.Router(),
-  mediaRoutes = require('.//mediaRoutes');
+  mediaRoutes = require('./mediaRoutes');
 
   router.use('/media*', mediaRoutes)
   /*
