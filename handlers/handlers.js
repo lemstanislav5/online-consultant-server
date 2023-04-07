@@ -1,6 +1,8 @@
 const fs = require("fs");
 const { createWriteStream } = require('fs');
 const util = require('../utilities/utilities');
+const process = require('process');
+
 
 const UsersController = require('../controllers/UserController');
 const MessegesController = require('../controllers/MessegesController');
@@ -14,7 +16,7 @@ module.exports = {
     //! MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', delivered = 1, read = 0);
     UsersController.setCurrent(chatId, 1);
   },
-  connection: async (socket, bot, process) => {
+  connection: async (socket, bot) => {
     console.log('Пользователь подключился!');
     socket.on('newMessage', async (message, callback) => {
       const { id, text, chatId } = message;
@@ -177,10 +179,10 @@ module.exports = {
   
     if(type && dir && data) {
       const { file_id } = data;
-      if (await util.checkDirectory(__dirname + dir, fs)) {
+      if (await util.checkDirectory(process.cwd() + dir, fs)) {
         const stream = await bot.getFileStream(file_id);
         let fileName = new Date().getTime() + '.' + type;
-        stream.pipe(createWriteStream(__dirname + dir + fileName));
+        stream.pipe(createWriteStream(process.cwd() + dir + fileName));
         stream.on('finish', async () => {
           let currentUser = await UsersController.getCurrent();
           if (currentUser.length === 0) {
@@ -188,9 +190,8 @@ module.exports = {
           } else {
             const socketId = await UsersController.getSocketCurrentUser(currentUser[0].chatId);
             if (!socketId) return MessegesController.sendBotNotification(bot, id, 'Адресат не найден в базе!');
-            io.to(socketId).emit('newMessage', 'http://' + URL + dir + fileName, type);
-            //! Проверка доставки сообщения
-            MessegesController.add(id, socketId, messageId, 'http://' + URL + dir + fileName, new Date().getTime(), 'to', read = 0);
+            io.to(socketId).emit('newMessage', 'http://' + URL + '/api' + dir + fileName, type);
+            MessegesController.add(id, socketId, messageId, 'http://' + URL + '/api' + dir + fileName, new Date().getTime(), 'to', read = 0);
           }
         });
       } else {
