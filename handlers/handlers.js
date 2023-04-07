@@ -108,7 +108,6 @@ module.exports = {
       await util.checkDirectory(dir, fs); 
       const fileName = new Date().getTime();
       const pathFile = 'http://' + process.env.URL + '/api/media/' + section + '/' + fileName + '.' + type;
-      console.log(pathFile)
       fs.writeFile(dir + '/' + fileName + '.' + type, file, (err) => {
         if (err) {
           callback({url: false});
