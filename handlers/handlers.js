@@ -14,20 +14,36 @@ module.exports = {
     //! MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', delivered = 1, read = 0);
     UsersController.setCurrent(chatId, 1);
   },
-  connection: (socket, io, bot) => {
+  connection: async (socket, io, bot) => {
     console.log('Пользователь подключился!');
-  
-    socket.on('newMessage', async (message, callback) => {
-      // Опеределяем обратное уведомление
-      let notification = {add: false, send: false}
+     // Получаем managerId 
+     const manager = await ManagerController.get();
+     // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
+     if (manager.length === 0 || manager[0].accest === 0) {
+      return io.to(socket.id).emit('notification', 'Менеджер offline!');
+     }
+    /* 
+      Следует отпметить, что по логике отчета об отправленных сообщениях, пользователь 
+      получает уведомления об: 
+        - (не)успешной доставке на сервер;
+        - (не)успешной отправке сообщения в бот.
+      При этом пользователь не получит уведомление о прочтении сообщения. 
+    */
+    socket.on('newMessage', (message, callback) => {
+      console.log(manager);
       // Разбераем сообщение
       const { id, text, chatId } = message;
+      // Опеределяем дефолтные настроки обратного уведомления  для callback
+      let notification = {add: false, send: false};
       // Устаналиваем chatId текущего пользователя если он не выбран
       UsersController.setCurrent(chatId);
       // В зависимости от результата поиска добовляем или обновляем socketId
       UsersController.addOrUpdateUser(socket, chatId);
-      //! Если добавление успещшно message: { add: true, send: false}
-      // Пытаемся добавить сообщение в базу данных, если происходит ошибка отправляем уведомление пользователю
+      /** 
+       * Пытаемся добавить сообщение в базу данных, если происходит ошибка отправляем 
+       * уведомление пользователю { add: false, send: false}, 
+       * если сообщение успешно добавлено обновляем уведомление { add: true, send: false} 
+      */
       try {
         MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', read = 0);
         notification = {...notification, add: true};
@@ -35,17 +51,17 @@ module.exports = {
         console.error('MessegesController.add: ', err);
         return callback(true, notification);
       }
-  
-      const manager = await ManagerController.get(id);
-      // Сообщаем пользователю об отсутствии менеджера
-      if (manager.length === 0 || manager[0].accest === 0)
-        return io.to(socket.id).emit('notification', 'Менеджер offline!');
-      //! Если отправка успещшна message: { add: true, send: true}
+      /** 
+       * Пытаемся отправить сообщение в бот, если отправка успешна,
+       * обновляем уведомление на { add: true, send: true}, 
+       * если произошла ошибка отправляем уведомление { add: true, send: false}, 
+       * и сообщаем об ошибке
+      */
       try {
         MessegesController.sendMessegesToBot(bot, io, text, chatId, socket);
         notification = {...notification, send: true};
         return callback(false, notification);
-      } catch (err) {
+      } catch (err) {;
         console.error('newMessage -> MessegesController.sendMessegesToBot: ', err);
         return callback(true, notification);
       }
@@ -59,8 +75,15 @@ module.exports = {
     });
   
     socket.on('introduce', async (message, callback) => {
+      // Разбираем сообщение
       const { name, email, chatId } = message;
+      // Опеределяем дефолтные настроки обратного уведомления для callback
       let notification = {add: false, send: false}
+      /**  
+       * Пытаемся добавить "name" и "email" в базу данных, если происходит ошибка отправляем 
+       * уведомление пользователю { add: false, send: false}, 
+       * если сообщение успешно добавлено обновляем уведомление { add: true, send: false} 
+      */ 
       try {
         UsersController.setNameAndEmail(name, email, chatId);
         notification = {...notification, add: true};
@@ -68,6 +91,12 @@ module.exports = {
         console.error('UsersController.setUserNameAndEmail: ', err);
         return callback(true, notification);
       }
+      /** 
+       * Пытаемся отправить сообщение в бот, если отправка успешна,
+       * обновляем уведомление на { add: true, send: true}, 
+       * если произошла ошибка отправляем уведомление { add: true, send: false}, 
+       * и сообщаем об ошибке
+      */
       try {
         MessegesController.sendMessegesToBot(bot, io, `Пользователь представился как: ${name} ${email}`, chatId, socket);
         notification = {...notification, send: true};
@@ -90,7 +119,7 @@ module.exports = {
         section = 'video';
       }
       let dir = __dirname + '/media/' + section;
-      await util.checkDirectory(dir, fs); //await
+      await util.checkDirectory(dir, fs); 
       const fileName = new Date().getTime();
       const pathFile = 'http://' + URL + '/api/media/' + section + '/' + fileName + '.' + type;
       console.log(pathFile);
@@ -122,7 +151,6 @@ module.exports = {
       ManagerController.add(id);
       return MessegesController.sendBotNotification(bot, id, 'Введите пароль:')
     };
-    const manager = await ManagerController.find(id);
   
     if (photo !== undefined) {
       // В массиве "photo" содержатся ссылки на изображения различного размера 
