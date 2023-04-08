@@ -30,8 +30,8 @@ module.exports = {
         - (не)успешной отправке сообщения в бот.
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
-    socket.on('newMessage', (message, callback) =>  socket => {
-      console.log('socket.managerId', socket.managerId);
+    socket.on('newMessage', (message, callback) => manager => {
+      console.log('socket.managerId', manager);
       // Разбераем сообщение
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
