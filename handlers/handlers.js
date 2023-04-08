@@ -16,6 +16,7 @@ module.exports = {
   },
   connection: async (socket, io, bot) => {
     console.log('Пользователь подключился!');
+    console.log('socket.managerId---', socket.managerId);
     // Получаем managerId 
     const manager = await ManagerController.get();
     // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
