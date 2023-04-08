@@ -18,13 +18,16 @@ module.exports = {
     console.log('Пользователь подключился!');
   
     socket.on('newMessage', async (message, callback) => {
+      // Опеределяем обратное уведомление
       let notification = {add: false, send: false}
+      // Разбераем сообщение
       const { id, text, chatId } = message;
       // Устаналиваем chatId текущего пользователя если он не выбран
       UsersController.setCurrent(chatId);
       // В зависимости от результата поиска добовляем или обновляем socketId
       UsersController.addOrUpdateUser(socket, chatId);
       //! Если добавление успещшно message: { add: true, send: false}
+      // Пытаемся добавить сообщение в базу данных, если происходит ошибка отправляем уведомление пользователю
       try {
         MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', read = 0);
         notification = {...notification, add: true};

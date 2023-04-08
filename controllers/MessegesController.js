@@ -16,8 +16,7 @@ class MessegesController {
       // Статус сообщение устанавливается как отправленное
       // Клиенту сообщается об отправке сообщения
     } else {
-      //! Впоследствии заменить на "notification"  с разработкой функционала отображения на стороне клиента шапке окна
-      io.to(socket.id).emit('newMessage', 'Менеджер offline!');
+      io.to(socket.id).emit('notification', 'Менеджер offline!');
       console.log('Пользователю сообщил, что менеджера нет в сети.');
     }
   }
@@ -44,8 +43,6 @@ class MessegesController {
     });
   }
 
-
-  // bot.sendAudio(msg.chat.id, 'https://upload.wikimedia.org/wikipedia/commons/c/c8/Example.ogg');
   sendBotNotification(bot, managerId, text){
     bot.sendMessage(managerId, text);
   }
