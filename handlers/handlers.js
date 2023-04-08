@@ -233,6 +233,7 @@ module.exports = {
         io.to(socket.id).emit('notification', 'Менеджер offline!');
         next(new Error('Ошибака получения данных о менеджере'));
       }
+      console.log('add socket.managerId', manager.managerId)
       socket.managerId = manager.managerId;
       next();
     } catch {
