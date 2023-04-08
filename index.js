@@ -22,7 +22,9 @@ app.get('/api', routes);
 http.listen(process.env.PORT, () => console.log('listening on *:' + process.env.PORT));
 InitializationController.initialization();
 // группа связи телеграмм и сокета, я их называю "коннекторы"
-io.on('connection', socket => handlers.connection(socket, io, bot))
+// middleware
+io.use((socket, next) => handlers.getManagerId(socket, next));
+io.on('connection', socket => handlers.connection(socket, io, bot));
 
 bot.on('message', message => handlers.message_bot(message, io, bot));
 
