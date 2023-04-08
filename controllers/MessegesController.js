@@ -6,11 +6,12 @@ class MessegesController {
     console.log('Сообщение добавлено в базу.');
   }
   async sendMessegesToBot(bot, io, text, chatId, socket, manager) {
+    const { managerId } = socket;
     const userData = await findUser(chatId);
     console.log('userData', userData);
     const userName = (userData[0].name === null)? 'user['+userData[0].id+']' : userData[0].name + '['+userData[0].id+']';
     if (manager.length !== 0) {
-      bot.sendMessage(manager[0].managerId, userName + '\n' + text);
+      bot.sendMessage(managerId, userName + '\n' + text);
       console.log('Отправлено в бот.');
       // Статус сообщение устанавливается как отправленное
       // Клиенту сообщается об отправке сообщения
