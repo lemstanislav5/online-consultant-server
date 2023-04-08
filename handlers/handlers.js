@@ -235,7 +235,7 @@ module.exports = {
         next(new Error('Ошибака получения данных о менеджере'));
       }
       console.log('add socket.managerId', manager.managerId)
-      socket.managerId = manager.managerId;
+      socket.managerId = manager[0].managerId;
       next();
     } catch {
       next(new Error('Ошибака получения данных о менеджере'))
