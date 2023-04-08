@@ -16,7 +16,7 @@ module.exports = {
   },
   connection: async (socket, io, bot) => {
     console.log('Пользователь подключился!');
-    console.log('socket.managerId---', socket.managerId);
+    console.log('socket.managerId', socket.managerId);
     // Получаем managerId 
     const manager = await ManagerController.get();
     // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
@@ -30,8 +30,8 @@ module.exports = {
         - (не)успешной отправке сообщения в бот.
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
-    socket.on('newMessage', (message, callback) => manager => {
-      console.log('socket.managerId', manager);
+    socket.on('newMessage', (message, callback) => {
+      console.log('socket', socket);
       // Разбераем сообщение
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
@@ -233,7 +233,7 @@ module.exports = {
         io.to(socket.id).emit('notification', 'Менеджер offline!');
         next(new Error('Ошибака получения данных о менеджере'));
       }
-      global.managerId = manager.managerId;
+      socket.managerId = manager.managerId;
       next();
     } catch {
       next(new Error('Ошибака получения данных о менеджере'))
