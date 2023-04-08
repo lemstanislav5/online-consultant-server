@@ -30,7 +30,7 @@ module.exports = {
         - (не)успешной отправке сообщения в бот.
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
-    socket.on('newMessage', (message, callback) => {
+    socket.on('newMessage', (message, callback) =>  socket => {
       console.log('socket.managerId', socket.managerId);
       // Разбераем сообщение
       const { id, text, chatId } = message;
@@ -233,7 +233,7 @@ module.exports = {
         io.to(socket.id).emit('notification', 'Менеджер offline!');
         next(new Error('Ошибака получения данных о менеджере'));
       }
-      socket.managerId = manager.managerId;
+      global.managerId = manager.managerId;
       next();
     } catch {
       next(new Error('Ошибака получения данных о менеджере'))
