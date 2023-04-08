@@ -32,8 +32,6 @@ module.exports = {
     socket.on('newMessage', (message, callback) => {
       // Разбераем сообщение
       const { id, text, chatId } = message;
-      console.log('manager', manager);
-      console.log('chatId', chatId);
       // Опеределяем дефолтные настроки обратного уведомления  для callback
       let notification = {add: false, send: false};
       // Устаналиваем chatId текущего пользователя если он не выбран
