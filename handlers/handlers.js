@@ -66,7 +66,8 @@ module.exports = {
       }
     });
   
-    socket.on('setNewSocket', (chatId) => {
+    socket.on('setNewSocket', (data) => {
+      const { chatId } = data;
       console.log('setNewSocket', chatId)
       // Устаналиваем chatId текущего пользователя если он не выбран
       UsersController.setCurrent(chatId);
