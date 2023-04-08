@@ -10,15 +10,10 @@ class MessegesController {
     const userData = await findUser(chatId);
     console.log('userData', userData);
     const userName = (userData[0].name === null)? 'user['+userData[0].id+']' : userData[0].name + '['+userData[0].id+']';
-    if (manager.length !== 0) {
-      bot.sendMessage(managerId, userName + '\n' + text);
-      console.log('Отправлено в бот.');
-      // Статус сообщение устанавливается как отправленное
-      // Клиенту сообщается об отправке сообщения
-    } else {
-      io.to(socket.id).emit('notification', 'Менеджер offline!');
-      console.log('Пользователю сообщил, что менеджера нет в сети.');
-    }
+    bot.sendMessage(managerId, userName + '\n' + text);
+    console.log('Отправлено в бот.');
+    //! Статус сообщение устанавливается как отправленное
+    //! Клиенту сообщается об отправке сообщения
   }
 
   async sendFile(bot, io, pathFile, section, callback, socket, manager) {
