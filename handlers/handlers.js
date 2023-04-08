@@ -227,9 +227,11 @@ module.exports = {
     try {
       // Получаем managerId 
      const manager = await ManagerController.get();
+     console.log(manager)
      // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
      if (manager.length === 0 || manager[0].accest === 0) {
-       return io.to(socket.id).emit('notification', 'Менеджер offline!');
+       io.to(socket.id).emit('notification', 'Менеджер offline!');
+       next(new Error('Ошибака получения данных о менеджере'));
      }
       socket.managerId = manager.managerId
     } catch {
