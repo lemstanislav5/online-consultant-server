@@ -16,7 +16,7 @@ module.exports = {
   },
   connection: async (socket, io, bot) => {
     console.log('Пользователь подключился!');
-    console.log('socket.managerId', socket.managerId);
+    console.log('socket.managerId connection', socket.managerId);
     // Получаем managerId 
     const manager = await ManagerController.get();
     // Если менеджер отсуствует или не имеет доступ (не ввел пароль) отправляем уведомление
@@ -31,7 +31,7 @@ module.exports = {
       При этом пользователь не получит уведомление о прочтении сообщения. 
     */
     socket.on('newMessage', (message, callback) => {
-      console.log('socket.managerId', socket.managerId);
+      console.log('socket.managerId newMessage', socket.managerId);
       // Разбераем сообщение
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
