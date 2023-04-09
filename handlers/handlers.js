@@ -2,6 +2,7 @@ const fs = require("fs");
 const { createWriteStream } = require('fs');
 const util = require('../utilities/utilities');
 const process = require('process');
+const { v4: uuidv4 } = require('uuid');
 
 
 const UsersController = require('../controllers/UserController');
@@ -132,7 +133,7 @@ module.exports = {
     });
   },
   message_bot: async (message, io, bot) => {
-    let messageId = 'server_' + new Date().getTime();
+    let messageId = 'server_' + uuidv4();
     const {chat, text, photo, document, video, audio, voice} = message;
     let type = false, dir  = false, data = false;
     const { id }  = chat;

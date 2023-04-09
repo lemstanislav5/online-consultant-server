@@ -5,7 +5,9 @@
  * const { v4: uuidv4 } = require('uuid');
  * uuidv4();
 */
-
+//! При выводе сообщений пользователя обновляю данные сообщения как прочитанные
+//! MessegesController.add(chatId, socket.id, id, text, new Date().getTime(), 'from', delivered = 1, read = 0);
+//! Проверка доставки сообщения
 require('dotenv').config()
 
 const process = require('process');
