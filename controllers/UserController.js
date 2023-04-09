@@ -7,6 +7,8 @@ const {
   delCurrentUser,
   updateCurrentUser,
   setUserNameAndEmail,
+  userOffline,
+  findUserBySocketId,
 } = require('../services/dataBaseSqlite3');
 
 
@@ -49,9 +51,16 @@ class UsersController {
     if (user.length === 0) return false;
     return user[0].socketId;
   }
-  async setNameAndEmail(name, email, chatId){
+  setNameAndEmail(name, email, chatId){
     console.log('Вносим сведения об имени и email пользовтаеля!');
     setUserNameAndEmail(name, email, chatId);
+  }
+  async offline(socketId){
+    console.log('Сокет ' + socketId + ' отсоединился!');
+    const user = await findUserBySocketId(socketId);
+    console.log(user);
+    console.log('Статутс пользователя обновлен на offline!');
+    userOffline(socketId);
   }
 }
 
