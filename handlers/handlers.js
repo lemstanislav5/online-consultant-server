@@ -57,7 +57,6 @@ module.exports = {
     });
     socket.on('setNewSocket', (data) => {
       const { chatId } = data;
-      console.log('setNewSocket', chatId)
       // Устаналиваем chatId текущего пользователя если он не выбран
       UsersController.setCurrent(chatId);
       // В зависимости от результата поиска добовляем или обновляем socketId
@@ -128,9 +127,8 @@ module.exports = {
       });
     });
     socket.on('disconnect', () => {
-      console.log(currentSocketId);
-      UsersController.delCurrent();
-      console.log('Пользователь отсоединился!')
+      // UsersController.delCurrent();
+      UsersController.offline(currentSocketId);
     });
   },
   message_bot: async (message, io, bot) => {
