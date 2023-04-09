@@ -1,3 +1,9 @@
+/** ЗАДАЧИ
+ * Показать пользоватеей online
+ * Показать всех пользователей для выбора сообщений
+ * Проверка прочтения сообщения
+*/
+
 require('dotenv').config()
 
 const process = require('process');
@@ -27,5 +33,4 @@ io.use((socket, next) => handlers.getManagerId(socket, next));
 io.on('connection', socket => handlers.connection(socket, bot));
 
 bot.on('message', message => handlers.message_bot(message, io, bot));
-
 bot.on('callback_query', msg => handlers.callback_query_bot(msg));
