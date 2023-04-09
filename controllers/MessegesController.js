@@ -35,7 +35,7 @@ class MessegesController {
     if(users.length === 0) return bot.sendMessage(id, 'Посетителей нет!');
     const messages = await getMesseges();
     const arr = users.map(current => {
-      let name = (current.name === null)? 'User['+current.id+']' : current.name + '['+current.id+']';
+      let name = (current.name === null)? 'Пользователь ['+current.id+']' : current.name + '['+current.id+']';
       let status = (current.online === 0)? 'offline' : 'online';
       let userMesseges = messages.reduce((result, message) => {
         if(message.chatId === current.chatId) return [...result, message];

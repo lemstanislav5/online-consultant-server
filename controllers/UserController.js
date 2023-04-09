@@ -37,7 +37,7 @@ class UsersController {
   async delCurrent() {
     const chatId = await getCurrentUser().chatId;
     await delCurrentUser(chatId);
-    console.log('Статус "текущий" у пользователя ' + chatId + ' удален в разъединением связи!');
+    console.log('Статус "текущий" у пользователя ' + chatId + ' удален в связи с разъединением связи!');
   }
   getCurrent() {
     console.log('Получаем текущего пользователя');

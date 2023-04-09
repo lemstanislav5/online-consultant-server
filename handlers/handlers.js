@@ -18,6 +18,7 @@ module.exports = {
   },
   connection: async (socket, bot) => {
     console.log('Пользователь подключился!');
+    const currentSocketId = socket.id
     socket.on('newMessage', async (message, callback) => {
       const { id, text, chatId } = message;
       // Опеределяем дефолтные настроки обратного уведомления  для callback
@@ -127,6 +128,7 @@ module.exports = {
       });
     });
     socket.on('disconnect', () => {
+      console.log(currentSocketId);
       UsersController.delCurrent();
       console.log('Пользователь отсоединился!')
     });
