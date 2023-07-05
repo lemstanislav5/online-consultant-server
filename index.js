@@ -22,7 +22,11 @@ const InitializationController = require('./controllers/InitializationController
 const express = require('express'),
       app = express(),
       http = require('http').Server(app),
-      io = require('socket.io')(http, { maxHttpBufferSize: 1e8, pingTimeout: 60000 });
+      io = require('socket.io')(http, { 
+         maxHttpBufferSize: 1e8, 
+         pingTimeout: 60000, 
+         cors: { origin: '*' }, 
+      });
 /* задает разрешение на получение статических данных (изображений, аудио, видео не) 
    без привязки к url сайта с которого пошел запрос 
 */
